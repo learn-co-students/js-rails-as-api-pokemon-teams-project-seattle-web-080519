@@ -1,12 +1,6 @@
 class PokemonsController < ApplicationController
 
   def index
-    # pokemons = Pokemon.all
-    # options = {
-    #   include: [:trainer]
-    # }
-    # render json: PokemonSerializer.new(pokemons, options)
-   
     pokemons = Pokemon.all
       options = {
           include: [:trainer]
@@ -22,7 +16,6 @@ class PokemonsController < ApplicationController
     options = {
       include: [:trainer]
     }
-    # render json: PokemonSerializer.new(pokemon, options)
     render json: pokemon, only: [:id, :name], include: {pokemons: {only: [:id, :nickname, :species, :trainer_id]}}
   end
 
@@ -40,6 +33,7 @@ class PokemonsController < ApplicationController
         puts "Pokemon saved!"
         render json: pokemon, only: [:id, :species, :nickname, :trainer_id]
       else
+        puts "Pokemon not saved because:"
         puts pokemon.errors.full_messages
       end
     else
@@ -51,10 +45,9 @@ class PokemonsController < ApplicationController
     pokemon = Pokemon.find_by(id: params[:id])
     if pokemon.nil?
       puts "Pokemon not found"
-      render json: "Pokemon destroyed"
     end
     if pokemon.destroy
-      puts "pokemon destroyed"
+      puts "Pokemon destroyed"
       render json: pokemon, only: [:id, :nickname, :species, :trainer_id]
     else
       puts pokemon.errors.full_messages
